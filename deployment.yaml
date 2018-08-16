@@ -1,0 +1,25 @@
+apiVersion: extensions/v1beta1 
+kind: Deployment 
+metadata:
+  name: node-webapp
+spec:
+  replicas: 7
+  strategy:
+    type: Recreate  # Delete the existing pods before creating the new one.
+                    # This way we don't have two bots connected at once, which
+                    # is not desired for custom integrations.
+                    #
+                    # The RollingUpdate strategy should be used for Slack Apps,
+                    # which need to scale to multiple teams.
+  template:
+    metadata:
+      labels:
+        app: node-web-app
+    spec:
+      containers:
+      - name: imagestore
+        image: gcr.io/mineral-minutia-173719/nodeapp:3.0  # Replace PROJECT_ID
+                                                   # with your project ID.
+        imagePullPolicy: IfNotPresent
+        ports: 
+        - containerPort: 3000
